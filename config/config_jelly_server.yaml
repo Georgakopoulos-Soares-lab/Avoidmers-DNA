@@ -1,0 +1,6 @@
+indir: 'model_organisms'
+outdir: 'avoidmers_expected_vs_observed'
+protocol: 'abacaba'
+max_kmer_length: 13
+validate_counts: 1
+genome_sizes: ''
