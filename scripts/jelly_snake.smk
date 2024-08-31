@@ -14,6 +14,7 @@ else:
     print("Initializing snakemake. Using local configuration...")
     configfile: 'config/config_jelly.yaml'
 
+
 indir = config['indir']
 outdir = Path(config['outdir']).resolve()
 outdir.mkdir(exist_ok=True)
@@ -71,12 +72,12 @@ rule count_kmers:
                    kmer = kmer.lower()
                    occurrences = int(occurrences)
                    jelly_counts.update({kmer: occurrences})
+
            try:
                assert set(kmer_python_counts.keys()) == set(jelly_counts.keys())
                print(colored("CHECKPOINT: >KMER SETS ARE EQUAL< VALIDATION STATUS: SUCCEEDED.", "green"))
            except AssertionError:
                print(colored("CHECKPOINT: >KMER SETS ARE EQUAL< VALIDATION STATUS: FAILED.", "red"))
-           breakpoint()
 
            try:
                for kmer in kmer_python_counts:
@@ -85,7 +86,7 @@ rule count_kmers:
            except AssertionError:
                print(colored("CHECKPOINT: >KMER COUNTS ARE THE SAME< VALIDATION STATUS: FAILED.", "red"))
 
-       # os.remove(infile)
+       os.remove(infile)
 
 
 rule find_avoidmers:
