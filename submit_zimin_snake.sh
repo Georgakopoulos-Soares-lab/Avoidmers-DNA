@@ -10,9 +10,12 @@ fi
 
 if [[ -n ${SSH_CONNECTION} ]];
 then
-  snakemake --snakefile scripts/zimin_snake.py --cores 1 --configfile config/config.yaml
+  snakemake --snakefile scripts/zimin_snake.py --latency-wait 5 --keep-going --cores 1 --configfile config/config.yaml
 else
   snakemake --use-conda --snakefile scripts/zimin_snake_single.py \
+	    --keep-incomplete \
+	    --rerun-triggers mtime \
+	    --keep-going
 	    --rerun-incomplete \
 	    --cores $j \
 	    --latency-wait 45 \

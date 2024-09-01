@@ -1,12 +1,16 @@
 #!/bin/bash
 
 j=${1:-1}
-if [[ ! -n ${SSH_CONNECTIOi} ]];
+
+if [[ ! -n ${SSH_CONNECTION} ]];
 then
-    snakemake --snakefile jelly_snake.smk --cores 1
+    snakemake --snakefile scripts/jelly_snake.smk --cores 1 --latency-wait 5 --keep-going
 else
-    snakemake --use-conda --snakefile jelly_snake.smk \
+    snakemake --use-conda --snakefile scripts/jelly_snake.smk \
 	    --rerun-incomplete \
+	    --keep-incomplete \
+	    --rerun-triggers mtime \
+	    --keep-going \
 	    --cores $j \
 	    --latency-wait 45 \
 	    --cluster-config config/cluster_settings.yaml \

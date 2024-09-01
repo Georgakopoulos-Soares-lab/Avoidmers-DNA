@@ -5,14 +5,22 @@ from collections import defaultdict
 def count_kmers(accession, kmer_length):
     counts = defaultdict(int)
     nucleotides = {"a", "g", "c", "t"}
+    total_nucleotides = 0
+    total_skipped = 0
     for _, seq in parse_fasta(accession):
-        for i in range(len(seq)-kmer_length+1):
+        total_length = len(seq)
+        total_nucleotides += total_length
+        for i in range(total_length-kmer_length+1):
             chunk = seq[i:i+kmer_length]
 
             if any(c not in nucleotides for c in chunk):
+                total_skipped += 1
                 continue
             counts[chunk] += 1
 
+    total_detected = sum(counts.values())
+    counts['total_skipped'] = total_skipped
+    print(f"Total detected: {total_detected}. Total nucleotides: {total_nucleotides}.")
     return dict(counts)
 
 def extract_name(f):

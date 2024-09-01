@@ -3,7 +3,7 @@
 mkdir -p model_organisms
 cd model_organisms/
 
-fin=${1:-model_organisms}
+fin=${1:-model_organisms.txt}
 while read model;
 do
   echo "Downloading model organism ${model}."

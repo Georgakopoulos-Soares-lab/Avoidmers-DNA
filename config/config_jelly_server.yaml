@@ -1,6 +1,6 @@
-indir: 'model_organisms'
+indir: 'models'
 outdir: 'avoidmers_expected_vs_observed'
 protocol: 'abacaba'
-max_kmer_length: 13
+max_kmer_length: 14
 validate_counts: 1
-genome_sizes: ''
+genome_sizes: 'scripts/genome_sizes.txt'
