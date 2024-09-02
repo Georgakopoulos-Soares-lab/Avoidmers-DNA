@@ -1,0 +1,6 @@
+out: 'avoidmers'
+protocol: 'abacaba'
+kmer_length: 50
+bedtools: '/storage/group/izg5139/default/nicole/miniconda3/envs/snake/bin'
+tempdir: 'temp'
+info: 'accession_seqID_mapping.txt'

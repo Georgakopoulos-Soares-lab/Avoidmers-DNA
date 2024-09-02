@@ -14,13 +14,15 @@ if __name__ == "__main__":
     accession_path = Path(args.accession_path).resolve()
     accession_mapper = defaultdict(list)
 
-    for accession in accession_path.glob("*.gz"):
+    accessions = [f for f in accession_path.glob("*.fa")]
+    accessions = accessions + [f for f in accession_path.glob("*.fna")]
+
+    for accession in accessions:
         accession_name = extract_name(accession)
         for seqID, _ in parse_fasta(accession):
             accession_mapper["accession"].append(str(accession))
             accession_mapper["accession_name"].append(accession_name)
             accession_mapper["seqID"].append(seqID)
-
 
     accession_mapper = pd.DataFrame(accession_mapper)
     accession_mapper.to_csv("accession_seqID_mapping.txt", mode="w", sep="\t", index=False, header=True)

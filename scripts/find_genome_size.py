@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
         genome_size.update({model_name: total})
         chrom_size = model.parent.parent.joinpath('model_organsisms', model_name + 'chrom.sizes')
-        
+
         if chrom_size.is_file():
             with chrom_size.open('r') as f:
                 for line in f:

@@ -1,6 +1,7 @@
 from utils import search_chromosome, extract_name
 import os
 import csv
+from tqdm import tqdm
 from pathlib import Path
 from detection import get_search_protocol
 import pandas as pd
@@ -33,20 +34,13 @@ def detect_pattern(accession: os.PathLike[str],
                             fieldnames=["seqID", "start", "end", "sequence", "length", "type"],
                             delimiter=","
                             )
-
+    writer.writeheader()
     seq_length = len(seq)
     nucleotides = {"a", "g", "c", "t"}
-    from tqdm import tqdm
 
     for i in tqdm(range(seq_length-kmer_length+1), total=seq_length-kmer_length+1):
         for lookahead in range(kmer_length, seq_length-i+1):
             chunk = seq[i:i+lookahead]
-
-            # i = 0 | lookahead = 8
-            # AGAGAGA|U]X
-            # i = 1 | lookahead = 7
-            #
-            #  GAGAGA|U]X
 
             if any(c not in nucleotides for c in chunk):
                 # break since it contains unsequenced data
@@ -88,21 +82,17 @@ def detect_pattern(accession: os.PathLike[str],
             writer.writerow(info)
     out.close()
 
-    # A|GCAGA|TATAGGACTA(U)
-    #   GCAGA|TATAGGACTA(U)
-    #    CAGA|TATAGGACTA
-
-    avoidmers_df = pd.read_csv(outdir.joinpath(filename))\
+    maximal_avoidmers = pd.read_csv(outdir.joinpath(filename))\
                     .groupby(["seqID", "end"], as_index=False)\
                     .agg({
                           "start": "min",
-                          "sequence": "first",
+                          "sequence": lambda ds: [seq for seq in ds.tolist() if len(seq) == max(map(len, ds.tolist()))][0],
                           "length": "max",
                           "type": "first"
-                          })
+                          })[["seqID", "start", "end", "sequence", "length", "type"]]
 
     maximal_filename = f"{accession_name}_{search_protocol}_words_length_{kmer_length}_seq_{seqID}.maximal.txt"
-    avoidmers_df.to_csv(outdir.joinpath(maximal_filename), sep=",", mode="w", index=False)
+    maximal_avoidmers.to_csv(outdir.joinpath(maximal_filename), sep=",", mode="w", index=False)
 
 
 if __name__ == "__main__":

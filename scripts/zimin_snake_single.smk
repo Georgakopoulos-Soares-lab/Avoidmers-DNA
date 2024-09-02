@@ -1,14 +1,11 @@
 from pathlib import Path
+import pybedtools
+from pybedtools import BedTool
 from zimin_detext import detect_pattern
 from utils import extract_name, merged_seq
 import pandas as pd
-import pybedtools
-from pybedtools import BedTool
 
-configfile: "config/config_server.yaml"
-
-pybedtools.helpers.set_temp_dfdir(config['temp_dfdir'])
-pybedtools.set_bedtools_path(config['bedtools'])
+configfile: "config/config.yaml"
 
 out = Path(config['out']).resolve()
 protocol = config['protocol']
@@ -20,17 +17,9 @@ info_assembly = info.set_index("name")["accession"].to_dict()
 
 rule all:
     input:
-        expand('%s/pattern_merged_%s/{assembly}_%s_words_length_%s.txt' % (out, protocol, protocol, kmer_length),
+        expand('%s/pattern_merged_%s/{assembly}_%s_words_length_%s.merged.txt' % (out, protocol, protocol, kmer_length),
                assembly=info['name'].drop_duplicates()
                )
-
-        # '%s/pattern_merged_%s/{assembly}_%s_words_length_%s.extended.merged.txt' % (out, protocol, protocol, kmer_length)],
-        # expand('%s/pattern_extended_%s/{assembly}_%s_words_length_%s_seq_{seqID}.extended.txt' % (out, protocol, protocol, kmer_length),
-        #       zip,
-        #       assembly=info['name'],
-        #       seqID=info['seqID']
-        #       )
-
 
 rule extractPatterns:
     input:
@@ -54,21 +43,21 @@ rule mergeExtractions:
                 seqID=info[info['name'] == wc.assembly]['seqID']
                )
     output:
-        '%s/pattern_merged_%s/{assembly}_%s_words_length_%s.txt' % (out, protocol, protocol, kmer_length)
+        '%s/pattern_merged_%s/{assembly}_%s_words_length_%s.merged.txt' % (out, protocol, protocol, kmer_length)
     params:
         out=Path(config['out']).resolve(),
         protocol=config['protocol'],
         kmer_length=int(config['kmer_length'])
     run:
-        df = []
+        Path(config['temp_dir']).mkdir(exist_ok=True)
+        pybedtools.helpers.set_tempdir(config['temp_dir'])
+        pybedtools.set_bedtools_path(config['bedtools'])
 
+        df = []
         # '%s/pattern_merged_%s/{assembly}_%s_words_length_%s.extended.merged.txt' % (out, protocol, protocol, kmer_length)
         for extracted_seq in input:
             print(extracted_seq)
-            temp_df = pd.read_csv(extracted_seq,
-                               header=None,
-                               names=["seqID", "start", "end", "sequence", "length", "type"]
-                               )
+            temp_df = pd.read_csv(extracted_seq)
             df.append(temp_df)
 
         df = pd.concat(df, axis=0)
@@ -84,26 +73,13 @@ rule mergeExtractions:
                                 sep=","
                             )
 
-        maximal_avoidmers = df.groupby(["seqID", "end"], as_index=False)\
-                            .agg({
-                                  "start": "min",
-                                  "sequence": lambda ds: [seq for seq in ds.tolist() if len(seq) == max(map(len, ds.tolist()))][0]
-                                  }
-                                 )\
-                    .assign(sequenceLength=lambda ds: ds['sequence'].apply(len))
-
-        maximal_avoidmers.loc[:, "length"] = maximal_avoidmers["end"] - maximal_avoidmers["start"]
-        filename = f'%s/pattern_merged_%s/{wildcards.assembly}_%s_words_length_%s.extended.maximal.txt' % (out, protocol, protocol, kmer_length)
-
-        maximal_avoidmers = maximal_avoidmers[["seqID", "start", "end", "sequence", "sequenceLength", "length"]]
-        maximal_avoidmers.to_csv(filename, sep=",", mode="w", index=False)
-
+        print(df)
         # save merged coordinates
         df_merged = pd.read_table(
                    BedTool.from_dataframe(df)\
                              .sort()\
                              .merge(c=["2", "4", "4"], o=["collapse", "collapse", "count"], delim="|")\
-                            .fn,
+                             .fn,
                      header=None,
                      names=["seqID", "start", "end", "allStarts", "allSequences", "overlapCount"]
                     )
@@ -111,5 +87,5 @@ rule mergeExtractions:
         df_merged.loc[:, "mergedSequence"] = df_merged[["allStarts", "allSequences"]].apply(lambda row: merged_seq(row), axis=1)
         df_merged.drop(columns=["allStarts", "allSequences"], inplace=True)
 
-        merged = f'%s/pattern_merged_%s/{wildcards.assembly}_%s_words_length_%s.extended.merged.txt' % (out, protocol, protocol, kmer_length)
+        merged = f'%s/pattern_merged_%s/{wildcards.assembly}_%s_words_length_%s.merged.txt' % (out, protocol, protocol, kmer_length)
         df_merged.to_csv(merged, mode="w", index=False, sep=",")

@@ -76,9 +76,9 @@ rule count_kmers:
                f.write(f"{kmer} {occurrences}\n")
            f.close()
            del kmer_python_counts['total_skipped']
-           
+
            jelly_counts = {}
-           total_occurrences = 0 
+           total_occurrences = 0
            with open(out_dumped, 'r') as f:
                for line in f:
                    line = line.strip().split(" ")
@@ -91,7 +91,7 @@ rule count_kmers:
                total = genome_sizes[wildcards.accession]
                total_kmers  = total - int(wildcards.kmer_length) + 1
                print(f'{input[0]}> CHECKPOINT: >GENOME SIZE IS CORRECT< VALIDATION STATUS: {total},{total_occurrences},{total_kmers}.')
-          
+
 
            try:
                assert set(kmer_python_counts.keys()) == set(jelly_counts.keys())

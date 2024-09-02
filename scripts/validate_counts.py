@@ -51,7 +51,6 @@ if __name__ == "__main__":
 
     print(f"Total kmers detected {total_kmers} out of {4 ** kmer_length}.")
     counts = count_kmers(accession, kmer_length)
-    breakpoint()
 
     with open(jellypath, mode='r') as f:
         for line in f:
