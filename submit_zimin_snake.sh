@@ -8,11 +8,11 @@ then
 	# rm -rf .snakemake
 fi
 
-if [[ -n ${SSH_CONNECTION} ]];
+if [[ ! -n ${SSH_CONNECTION} ]];
 then
-  snakemake --snakefile scripts/zimin_snake.py --latency-wait 5 --keep-going --cores 1 --configfile config/config.yaml
+  snakemake --snakefile scripts/zimin_snake_single.smk --latency-wait 5 --keep-going --cores 1 --keep-incomplete
 else
-  snakemake --use-conda --snakefile scripts/zimin_snake_single.py \
+  snakemake --use-conda --snakefile scripts/zimin_snake_single.smk \
 	    --keep-incomplete \
 	    --rerun-triggers mtime \
 	    --keep-going
