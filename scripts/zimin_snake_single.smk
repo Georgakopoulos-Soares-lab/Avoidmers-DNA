@@ -45,7 +45,7 @@ rule extractPatterns:
 rule mergeExtractions:
     input:
         lambda wc: expand('%s/pattern_extractions_%s/{{assembly}}_%s_words_length_%s_seq_{seqID}.txt' % (out, protocol, protocol, kmer_length),
-                seqID=info[info['name'] == wc.assembly]['seqID']
+                          seqID=info[info['name'] == wc.assembly]['seqID'].tolist()
                )
     output:
         '%s/pattern_merged_%s/{assembly}_%s_words_length_%s.merged.txt' % (out, protocol, protocol, kmer_length)
@@ -78,7 +78,6 @@ rule mergeExtractions:
                                 sep=","
                             )
 
-        print(df)
         # save merged coordinates
         df_merged = pd.read_table(
                    BedTool.from_dataframe(df)\
@@ -89,7 +88,7 @@ rule mergeExtractions:
                      names=["seqID", "start", "end", "allStarts", "allSequences", "overlapCount"]
                     )
 
-        df_merged.loc[:, "mergedSequence"] = df_merged[["allStarts", "allSequences"]].apply(lambda row: merged_seq(row), axis=1)
+        df_merged.loc[:, "mergedSequence"] = df_merged[["start", "end", "allStarts", "allSequences", "overlapCount"]].apply(lambda row: merged_seq(row), axis=1)
         df_merged.drop(columns=["allStarts", "allSequences"], inplace=True)
 
         merged = f'%s/pattern_merged_%s/{wildcards.assembly}_%s_words_length_%s.merged.txt' % (out, protocol, protocol, kmer_length)

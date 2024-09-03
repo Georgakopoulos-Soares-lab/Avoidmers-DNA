@@ -24,11 +24,16 @@ data = {
   "test3": [
             ("agagtcagttgtatag", 0, 16),
             ("gagtcagttgtataga", 1, 17),
-  ]
-}
+  ],
+  "test5":
+            [
+                ("agatagt", 0, 7)
+            ],
 
-@pytest.mark.parametrize("test_input", ["test3", "test4"])
-def test_eval(test_input):
+  }
+
+@pytest.mark.parametrize("file,test_input", [("test", "test3"), ("test", "test4"), ("test", "test2"), ("test2", "test5")])
+def test_eval(file, test_input):
     global data
 
     test_suite = data[test_input]
@@ -37,9 +42,9 @@ def test_eval(test_input):
                                      "pattern_extractions_abacaba")
 
     if test_input == "test4":
-        file = path.joinpath(f"test_abacaba_words_length_6_seq_{test_input}.txt")
+        file = path.joinpath(f"{file}_abacaba_words_length_6_seq_{test_input}.txt")
     else:
-        file = path.joinpath(f"test_abacaba_words_length_6_seq_{test_input}.maximal.txt")
+        file = path.joinpath(f"{file}_abacaba_words_length_6_seq_{test_input}.maximal.txt")
 
     with open(file, 'r') as f:
         reader = csv.DictReader(f)

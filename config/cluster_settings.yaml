@@ -4,4 +4,4 @@ __default__:
     nodes: 1
     ncpus: 1
     jobName: 'JellyZimin'
-    time: '24:00:00'
+    time: '48:00:00'

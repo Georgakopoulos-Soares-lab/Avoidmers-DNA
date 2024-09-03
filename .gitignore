@@ -3,7 +3,13 @@
 *.gz
 *.fa
 *.csv
+*.fa
+**/jelly
+**/expected_avoidmers
 **/*.egg-info
 **/*.jf
 **/*.snakemake
 avoidmers/*
+*.webp
+*.jpg
+*.jpeg

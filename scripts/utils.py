@@ -31,6 +31,7 @@ def extract_name(accession: str) -> str:
 def merged_seq(row: dict) -> str:
     starts = list(map(int, row["allStarts"].split("|")))
     sequences = row["allSequences"].split("|")
+    assert int(row["overlapCount"]) == len(sequences) == len(starts), f"Invalid sequence count for {row} during merge operation."
     merged_sequence = ""
     if len(starts) == 1:
         return sequences[0]
@@ -39,6 +40,7 @@ def merged_seq(row: dict) -> str:
         merged_sequence += sequences[i][:s2-s1]
 
     merged_sequence += sequences[-1]
+    assert len(merged_sequence) == int(row["end"]) - int(row["start"]), f"Invalid sequence merge {row}"
     return merged_sequence
 
 
