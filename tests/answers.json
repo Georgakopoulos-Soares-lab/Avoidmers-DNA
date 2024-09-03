@@ -1,0 +1,17 @@
+{
+  "test4": [
+            ("agatag", 0, 6),
+            ("gataga", 1, 8),
+            ("atagat", 2, 8),
+            ("tagatagtg", 3, 11),
+            ("agatatg", 4, 11),
+            ("gatatg", 5, 11),
+        ],
+  "test2": [
+            ("catgcagtgacgatgctagcaacaatcatgactta", 0, 35)
+            ],
+  "test3": [
+            ("agagtcagttgtatag", 0, 16),
+            ("gagtcagttgtataga", 1, 17),
+  ]
+}
