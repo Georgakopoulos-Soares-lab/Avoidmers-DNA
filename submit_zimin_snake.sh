@@ -15,10 +15,8 @@ else
   snakemake --use-conda --snakefile scripts/zimin_snake_single.smk \
 	    --keep-incomplete \
 	    --rerun-triggers mtime \
-	    --keep-going
-	    --rerun-incomplete \
-	    --cores $j \
+	    --keep-going \
 	    --latency-wait 45 \
 	    --cluster-config config/cluster_settings.yaml \
-	    --cluster "sbatch -p {cluster.partition} -t {cluster.time} --mem={cluster.mem} -c {cluster.ncpus} --nodes={cluster.nodes} -o jobOut/{cluster.jobName}-%j.out -J {cluster.jobName} -e jobOut/{cluster.jobName}-%j.err" -j $j
+	    --cluster "sbatch -p {cluster.partition} -t {cluster.time} --mem={cluster.mem} -c {cluster.ncpus} --nodes={cluster.nodes} --account={cluster.account} -o jobOut/{cluster.jobName}-%j.out -J {cluster.jobName} -e jobOut/{cluster.jobName}-%j.err" -j $j
 fi

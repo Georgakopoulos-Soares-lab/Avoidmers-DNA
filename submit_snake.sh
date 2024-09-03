@@ -10,4 +10,6 @@
 
 # source activate my_env
 
-bash submit_zimin_snake.sh 100
+jobs=${1:-100}
+echo $jobs
+bash submit_zimin_snake.sh $jobs
