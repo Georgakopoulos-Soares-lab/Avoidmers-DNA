@@ -5,7 +5,12 @@ from zimin_detext import detect_pattern
 from utils import extract_name, merged_seq
 import pandas as pd
 
-configfile: "config/config.yaml"
+if "SSH_CONNECTION" in os.environ:
+    print("Initializing snakemake. Using remote configuration...")
+    configfile: 'config/config_server.yaml'
+else:
+    print("Initializing snakemake. Using local configuration...")
+    configfile: 'config/config.yaml'
 
 out = Path(config['out']).resolve()
 protocol = config['protocol']

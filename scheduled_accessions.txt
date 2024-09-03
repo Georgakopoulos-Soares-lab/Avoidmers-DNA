@@ -1,0 +1,5 @@
+accession	accession_name	seqID
+/home/nicol/biolab/avoidmers/tests/test.fna	test	test1
+/home/nicol/biolab/avoidmers/tests/test.fna	test	test2
+/home/nicol/biolab/avoidmers/tests/test.fna	test	test3
+/home/nicol/biolab/avoidmers/tests/test.fna	test	test4

@@ -4,7 +4,7 @@ j=$1
 
 if [[ -d ".snakemake" ]];
 then
-	echo "Hi"
+	echo "SNAKEMAKE <CHANNI>"
 	# rm -rf .snakemake
 fi
 

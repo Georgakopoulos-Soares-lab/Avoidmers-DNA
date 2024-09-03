@@ -12,7 +12,7 @@ In other words, there is not a homomorphism from ${a, b, c}$ to the nucleic acid
 within the avoidmer. In other words, there is no factor w of k such that $f(Z_{3}) = w$, for any mapping $f$.
 
 
-[avoidmers](avoidmers.png)
+<img src="avoidmers.png">
 
 ## Extraction
 

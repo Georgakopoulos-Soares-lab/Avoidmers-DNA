@@ -3,4 +3,4 @@ protocol: 'abacaba'
 kmer_length: 6
 bedtools: '/home/nicol/miniconda3/envs/zimin/bin'
 temp_dir: 'temp'
-info: 'accession_seqID_mapping.txt'
+info: 'scheduled_accessions.txt'
